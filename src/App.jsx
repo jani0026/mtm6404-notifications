@@ -1,34 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useState } from 'react';
+import notifications from './notifications';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [notificationList, setNotificationList] = useState(notifications);
+
+  const clearNotification = (id) => {
+    setNotificationList(notificationList.filter(notification => notification.id !== id));
+  };
+
+  const clearAllNotifications = () => {
+    setNotificationList([]);
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
-}
+    <div className="container">
+      <div className="notifications-wrapper">
+        <div className="header">
+          <div className="header-text">
+            <h1>Notifications</h1>
+            <p>
+              You have {notificationList.length} notification{notificationList.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          {notificationList.length > 0 && (
+            <button 
+              onClick={clearAllNotifications}
+              className="clear-all-button"
+            >
+              Clear All
+            </button>
+          )}
+        </div>
 
-export default App
+        <div className="notifications-list">
+          {notificationList.length === 0 ? (
+            <p className="empty-message">No notifications</p>
+          ) : (
+            notificationList.map(notification => (
+              <div key={notification.id} className="notification-card">
+                <button
+                  className="close-button"
+                  onClick={() => clearNotification(notification.id)}
+                >
+                  ×
+                </button>
+                <h2 className="notification-name">
+                  {notification.name}
+                </h2>
+                <p className="notification-message">
+                  {notification.message}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
